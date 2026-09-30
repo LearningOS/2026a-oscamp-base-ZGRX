@@ -2,7 +2,7 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-ZGRX",
-  "commit": "9645c0a0b12f45c8ce928c8dc70ff4c4df4590b8",
+  "commit": "7fd98100269a72a1adfa4877d1b37e7d249403dc",
   "score": 7,
   "totalScore": 100,
   "exercises": [
@@ -176,9 +176,9 @@
     }
   ],
   "student": "ZGRX",
-  "runId": "36545821038",
+  "runId": "36740821000",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
