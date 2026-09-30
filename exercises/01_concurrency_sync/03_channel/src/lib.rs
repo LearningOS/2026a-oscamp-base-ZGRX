@@ -18,7 +18,10 @@ pub fn simple_send_recv(items: Vec<String>) -> Vec<String> {
     // TODO: Spawn thread to send each element in items
     // TODO: In main thread, receive all messages and collect into Vec
     // Hint: When all Senders are dropped, recv() returns Err
-    todo!()
+    let (tx,rx) = std::sync::mpsc::channel();
+    let producer_thread = thread::spawn(move||{
+            let msg = rx.recv().unwrap();
+    })
 }
 
 /// Create `n_producers` producer threads, each sending a message in format `"msg from {id}"`.
