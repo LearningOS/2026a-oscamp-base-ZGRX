@@ -9,7 +9,7 @@
 //! - Multiple producers can be created via `Sender::clone()`
 
 use std::sync::mpsc;
-use std::thread;
+use std::{result, thread};
 
 /// Create a producer thread that sends each element from items into the channel.
 /// The main thread receives all messages and returns them.
@@ -20,20 +20,46 @@ pub fn simple_send_recv(items: Vec<String>) -> Vec<String> {
     // Hint: When all Senders are dropped, recv() returns Err
     let (tx,rx) = std::sync::mpsc::channel();
     let producer_thread = thread::spawn(move||{
-            let msg = rx.recv().unwrap();
-    })
+            for item in items{
+                tx.send(item).unwrap();
+            }
+    });
+    let result:Vec<String> = rx.iter().collect();
+
+    producer_thread.join().unwrap();
+    
+    result
 }
 
 /// Create `n_producers` producer threads, each sending a message in format `"msg from {id}"`.
 /// Collect all messages, sort them lexicographically, and return.
 ///
 /// Hint: Use `tx.clone()` to create multiple senders. Note that the original tx must also be dropped.
+/// 创建 `n_producers` 个生产者线程，每个线程发送一条格式为 `"msg from {id}"` 的消息。
+/// 收集所有消息，按字典序排序，并返回。
+///
+/// 提示：使用 `tx.clone()` 创建多个发送者。注意原始的 tx 也必须被丢弃（drop）。
 pub fn multi_producer(n_producers: usize) -> Vec<String> {
     // TODO: Create channel
     // TODO: Clone a sender for each producer
     // TODO: Remember to drop the original sender, otherwise receiver won't finish
     // TODO: Collect all messages and sort
-    todo!()
+    let(tx,rx) = std::sync::mpsc::channel();
+    let mut handles = Vec::new();
+    for i in 0..n_producers{
+        let tx_clone = tx.clone();
+        let handle = thread::spawn(move||{
+            tx_clone.send(format!("msg from {}",i)).unwrap();
+        });
+        handles.push(handle);
+    }
+    drop(tx);
+    for handle in handles{
+        handle.join().unwrap();
+    }
+    let mut result:Vec<String> = rx.iter().collect();
+    result.sort();
+    result
 }
 
 #[cfg(test)]
