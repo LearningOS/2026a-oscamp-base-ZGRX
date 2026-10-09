@@ -45,83 +45,83 @@ cargo run -p oscamp-cli -- watch
 
 ### 1. 同步并发：`exercises/01_concurrency_sync/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
-| `01_thread_spawn` | `thread::spawn`、`move` 闭包、`join` |
-| `02_mutex_counter` | `Arc<Mutex<T>>` 与共享状态 |
-| `03_channel` | `mpsc::channel` 与多生产者通信 |
-| `04_process_pipe` | `Command`、`Stdio::piped()` 与进程管道 |
+| 练习目录             | 主要知识点                                 |
+| -------------------- | ------------------------------------------ |
+| `01_thread_spawn`  | `thread::spawn`、`move` 闭包、`join` |
+| `02_mutex_counter` | `Arc<Mutex<T>>` 与共享状态               |
+| `03_channel`       | `mpsc::channel` 与多生产者通信           |
+| `04_process_pipe`  | `Command`、`Stdio::piped()` 与进程管道 |
 
 ### 2. no_std 开发：`exercises/02_no_std_dev/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
-| `01_mem_primitives` | `memcpy`、`memset`、`memmove`、`strlen`、`strcmp` |
-| `02_bump_allocator` | `GlobalAlloc`、Bump 分配器、CAS 并发保护 |
-| `03_free_list_allocator` | 空闲链表、侵入式链表、首次适配策略 |
-| `04_syscall_wrapper` | 系统调用 ABI、内联汇编与跨架构差异 |
-| `05_fd_table` | 文件描述符表、`Arc<dyn File>`、描述符复用 |
+| 练习目录                   | 主要知识点                                                  |
+| -------------------------- | ----------------------------------------------------------- |
+| `01_mem_primitives`      | `memcpy`、`memset`、`memmove`、`strlen`、`strcmp` |
+| `02_bump_allocator`      | `GlobalAlloc`、Bump 分配器、CAS 并发保护                  |
+| `03_free_list_allocator` | 空闲链表、侵入式链表、首次适配策略                          |
+| `04_syscall_wrapper`     | 系统调用 ABI、内联汇编与跨架构差异                          |
+| `05_fd_table`            | 文件描述符表、`Arc<dyn File>`、描述符复用                 |
 
 ### 3. 操作系统并发：`exercises/03_os_concurrency/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
-| `01_atomic_counter` | `AtomicU64`、`fetch_add`、CAS 循环 |
-| `02_atomic_ordering` | 内存顺序、Release-Acquire、`OnceCell` |
-| `03_spinlock` | 自旋锁、`compare_exchange`、`spin_loop` |
-| `04_spinlock_guard` | RAII、`Deref`、`DerefMut`、`Drop` |
-| `05_rwlock` | 手写读写锁与写者优先策略 |
+| 练习目录               | 主要知识点                                  |
+| ---------------------- | ------------------------------------------- |
+| `01_atomic_counter`  | `AtomicU64`、`fetch_add`、CAS 循环      |
+| `02_atomic_ordering` | 内存顺序、Release-Acquire、`OnceCell`     |
+| `03_spinlock`        | 自旋锁、`compare_exchange`、`spin_loop` |
+| `04_spinlock_guard`  | RAII、`Deref`、`DerefMut`、`Drop`     |
+| `05_rwlock`          | 手写读写锁与写者优先策略                    |
 
 ### 4. 上下文切换：`exercises/04_context_switch/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
+| 练习目录               | 主要知识点                           |
+| ---------------------- | ------------------------------------ |
 | `01_stack_coroutine` | 被调用者保存寄存器、栈帧、上下文切换 |
-| `02_green_threads` | 绿色线程、协作式调度与 yield |
+| `02_green_threads`   | 绿色线程、协作式调度与 yield         |
 
 该模块仅支持 RISC-V。使用练习工具或 `./check.sh` 会选择对应目标；详细说明见[上下文切换模块](exercises/04_context_switch/)。
 
 ### 5. 异步编程：`exercises/05_async_programming/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
-| `01_basic_future` | `Future`、`Poll`、`Waker` |
-| `02_tokio_tasks` | `tokio::spawn`、`JoinHandle` 与并发任务 |
-| `03_async_channel` | 异步生产者消费者与 `tokio::sync::mpsc` |
-| `04_select_timeout` | `tokio::select!`、超时控制、竞争执行 |
+| 练习目录              | 主要知识点                                  |
+| --------------------- | ------------------------------------------- |
+| `01_basic_future`   | `Future`、`Poll`、`Waker`             |
+| `02_tokio_tasks`    | `tokio::spawn`、`JoinHandle` 与并发任务 |
+| `03_async_channel`  | 异步生产者消费者与`tokio::sync::mpsc`     |
+| `04_select_timeout` | `tokio::select!`、超时控制、竞争执行      |
 
 ### 6. 页表：`exercises/06_page_table/`
 
-| 练习目录 | 主要知识点 |
-| --- | --- |
-| `01_pte_flags` | SV39 页表项位布局与标志位 |
-| `02_page_table_walk` | VPN、页内偏移、地址转换与缺页 |
-| `03_multi_level_pt` | 三级页表遍历与 2 MB 大页 |
-| `04_tlb_sim` | TLB 查询、FIFO 替换、按页或 ASID 刷新 |
+| 练习目录               | 主要知识点                            |
+| ---------------------- | ------------------------------------- |
+| `01_pte_flags`       | SV39 页表项位布局与标志位             |
+| `02_page_table_walk` | VPN、页内偏移、地址转换与缺页         |
+| `03_multi_level_pt`  | 三级页表遍历与 2 MB 大页              |
+| `04_tlb_sim`         | TLB 查询、FIFO 替换、按页或 ASID 刷新 |
 
 ## 练习与本地测试
 
 运行 `cargo run -p oscamp-cli -- watch`，打开当前题目的 `src/lib.rs`，阅读说明并补全代码。保存后工具会重新测试，通过后跳转到下一题。
 
-| 交互按键 | 作用 |
-| --- | --- |
-| `h` | 查看当前题目提示 |
-| `l` | 查看全部题目和进度 |
-| `n` / `p` | 下一题 / 上一题 |
-| `r` / Enter | 重新测试 |
-| `q` / Esc | 退出 |
+| 交互按键      | 作用               |
+| ------------- | ------------------ |
+| `h`         | 查看当前题目提示   |
+| `l`         | 查看全部题目和进度 |
+| `n` / `p` | 下一题 / 上一题    |
+| `r` / Enter | 重新测试           |
+| `q` / Esc   | 退出               |
 
 也可以在仓库根目录按需运行：
 
-| 命令 | 作用 |
-| --- | --- |
-| `cargo run -p oscamp-cli -- list` | 查看完成状态 |
-| `cargo run -p oscamp-cli -- check` | 检查全部练习，并为 RISC-V 题目选择对应目标 |
-| `cargo run -p oscamp-cli -- run thread_spawn` | 测试指定练习 |
-| `cargo run -p oscamp-cli -- hint thread_spawn` | 查看指定练习的提示 |
-| `cargo run -p oscamp-cli -- help` | 查看工具帮助 |
-| `cargo test -p thread_spawn` | 直接执行该包的测试 |
-| `cargo test -p thread_spawn -- --nocapture` | 同时显示测试中的标准输出 |
+| 命令                                             | 作用                                       |
+| ------------------------------------------------ | ------------------------------------------ |
+| `cargo run -p oscamp-cli -- list`              | 查看完成状态                               |
+| `cargo run -p oscamp-cli -- check`             | 检查全部练习，并为 RISC-V 题目选择对应目标 |
+| `cargo run -p oscamp-cli -- run thread_spawn`  | 测试指定练习                               |
+| `cargo run -p oscamp-cli -- hint thread_spawn` | 查看指定练习的提示                         |
+| `cargo run -p oscamp-cli -- help`              | 查看工具帮助                               |
+| `cargo test -p thread_spawn`                   | 直接执行该包的测试                         |
+| `cargo test -p thread_spawn -- --nocapture`    | 同时显示测试中的标准输出                   |
 
 包名与目录名不一定相同，例如 `03_async_channel` 的包名是 `async_channel_ex`。跨架构的全量检查使用上表中的 `check` 命令。
 
@@ -140,35 +140,34 @@ git push origin main
 
 ## 计分规则
 
-
 沿用往期各项练习的权重，每项全部通过才获得该项分数。每次提交重新计算全部练习，上传本次实际总分；不是按提交次数累加。部分完成也会上传测得的分数。编译或测试未通过、超时的练习记 0 分；环境准备失败、缺少结果或结果不完整时不上传。
 
-| 练习 | 分值 |
-| --- | ---: |
-| `thread_spawn` | 3 |
-| `mutex_counter` | 4 |
-| `channel` | 4 |
-| `process_pipe` | 4 |
-| `mem_primitives` | 4 |
-| `bump_allocator` | 5 |
-| `free_list_allocator` | 5 |
-| `syscall_wrapper` | 5 |
-| `fd_table` | 5 |
-| `atomic_counter` | 4 |
-| `atomic_ordering` | 4 |
-| `spinlock` | 4 |
-| `spinlock_guard` | 4 |
-| `rwlock` | 5 |
-| `stack_coroutine` | 6 |
-| `green_threads` | 6 |
-| `basic_future` | 4 |
-| `tokio_tasks` | 3 |
-| `async_channel_ex` | 3 |
-| `select_timeout` | 4 |
-| `pte_flags` | 3 |
-| `page_table_walk` | 4 |
-| `multi_level_pt` | 4 |
-| `tlb_sim` | 3 |
+| 练习                    | 分值 |
+| ----------------------- | ---: |
+| `thread_spawn`        |    3 |
+| `mutex_counter`       |    4 |
+| `channel`             |    4 |
+| `process_pipe`        |    4 |
+| `mem_primitives`      |    4 |
+| `bump_allocator`      |    5 |
+| `free_list_allocator` |    5 |
+| `syscall_wrapper`     |    5 |
+| `fd_table`            |    5 |
+| `atomic_counter`      |    4 |
+| `atomic_ordering`     |    4 |
+| `spinlock`            |    4 |
+| `spinlock_guard`      |    4 |
+| `rwlock`              |    5 |
+| `stack_coroutine`     |    6 |
+| `green_threads`       |    6 |
+| `basic_future`        |    4 |
+| `tokio_tasks`         |    3 |
+| `async_channel_ex`    |    3 |
+| `select_timeout`      |    4 |
+| `pte_flags`           |    3 |
+| `page_table_walk`     |    4 |
+| `multi_level_pt`      |    4 |
+| `tlb_sim`             |    3 |
 
 Actions 中测试作业变红表示还有未完成练习；单独的 **Save measured score and upload to OpenCamp** 作业显示成绩同步是否成功。日志出现 `OpenCamp accepted the score (result=1).` 才表示接口接受成绩。
 

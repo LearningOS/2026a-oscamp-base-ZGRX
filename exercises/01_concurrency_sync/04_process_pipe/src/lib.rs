@@ -1,38 +1,35 @@
-//! # Process and Pipes
+//! # 进程与管道
 //!
-//! In this exercise, you will learn how to create child processes and communicate through pipes.
+//! 在本练习中，你将学习如何创建子进程并通过管道进行通信。
 //!
-//! ## Concepts
-//! - `std::process::Command` creates child processes (corresponds to `fork()` + `execve()` system calls)
-//! - `Stdio::piped()` sets up pipes (corresponds to `pipe()` + `dup2()` system calls)
-//! - Communicate with child processes via stdin/stdout
-//! - Obtain child process exit status (corresponds to `waitpid()` system call)
+//! ## 概念
+//! - `std::process::Command` 创建子进程（对应 `fork()` + `execve()` 系统调用）
+//! - `Stdio::piped()` 设置管道（对应 `pipe()` + `dup2()` 系统调用）
+//! - 通过 stdin/stdout 与子进程通信
+//! - 获取子进程退出状态（对应 `waitpid()` 系统调用）
 //!
-//! ## OS Concepts Mapping
-//! This exercise demonstrates user‑space abstractions over underlying OS primitives:
-//! - **Process creation**: Rust's `Command::new()` internally invokes `fork()` to create a child process,
-//!   then `execve()` (or equivalent) to replace the child's memory image with the target program.
-//! - **Inter‑process communication (IPC)**: Pipes are kernel‑managed buffers that allow one‑way data
-//!   flow between related processes. The `pipe()` system call creates a pipe, returning two file
-//!   descriptors (read end, write end). `dup2()` duplicates a file descriptor, enabling redirection
-//!   of standard input/output.
-//! - **Resource management**: File descriptors (including pipe ends) are automatically closed when
-//!   their Rust `Stdio` objects are dropped, preventing resource leaks.
+//! ## 操作系统概念映射
+//! 本练习展示了用户空间对底层操作系统原语的抽象：
+//! - **进程创建**：Rust 的 `Command::new()` 内部调用 `fork()` 创建子进程，
+//!   然后调用 `execve()`（或等价调用）用目标程序替换子进程的内存映像。
+//! - **进程间通信（IPC）**：管道是由内核管理的缓冲区，允许相关进程之间单向传输数据。
+//!   `pipe()` 系统调用创建一个管道，返回两个文件描述符（读端、写端）。`dup2()` 复制文件描述符，
+//!   从而能够重定向标准输入/输出。
+//! - **资源管理**：当 Rust 的 `Stdio` 对象被丢弃时，文件描述符（包括管道端）会自动关闭，防止资源泄漏。
 //!
-//! ## Exercise Structure
-//! 1. **Basic command execution** (`run_command`) – launch a child process and capture its stdout.
-//! 2. **Bidirectional pipe communication** (`pipe_through_cat`) – send data to a child process (`cat`)
-//!    and read its output.
-//! 3. **Exit code retrieval** (`get_exit_code`) – obtain the termination status of a child process.
-//! 4. **Advanced: error‑handling version** (`run_command_with_result`) – learn proper error propagation.
-//! 5. **Advanced: complex bidirectional communication** (`pipe_through_grep`) – interact with a filter
-//!    program that reads multiple lines and produces filtered output.
+//! ## 练习结构
+//! 1. **基本命令执行**（`run_command`）——启动子进程并捕获其 stdout。
+//! 2. **双向管道通信**（`pipe_through_cat`）——向子进程（`cat`）发送数据并读取其输出。
+//! 3. **退出码获取**（`get_exit_code`）——获取子进程的终止状态。
+//! 4. **进阶：错误处理版本**（`run_command_with_result`）——学习正确的错误传播。
+//! 5. **进阶：复杂双向通信**（`pipe_through_grep`）——与一个读取多行并产生过滤输出的过滤程序交互。
 //!
-//! Each function includes a `TODO` comment indicating where you need to write code.
-//! Run `cargo test` to check your implementations.
+//! 每个函数都包含一个 `TODO` 注释，指示你需要编写代码的位置。
+//! 运行 `cargo test` 来检查你的实现。
 
 use std::io::{self, Read, Write};
-use std::process::{Command, Stdio};
+use std::os::unix::process;
+use std::process::{Command, CommandEnvs, Output, Stdio};
 
 /// Execute the given shell command and return its stdout output.
 ///
@@ -48,12 +45,15 @@ use std::process::{Command, Stdio};
 /// 2. Set `.stdout(Stdio::piped())` to capture the child's stdout.
 /// 3. Call `.output()` to execute the child and obtain its `Output`.
 /// 4. Convert the `stdout` field (a `Vec<u8>`) into a `String`.
+
 pub fn run_command(program: &str, args: &[&str]) -> String {
-    // TODO: Use Command::new to create process
-    // TODO: Set stdout to Stdio::piped()
-    // TODO: Execute with .output() and get output
-    // TODO: Convert stdout to String and return
-    todo!()
+    let output = Command::new(program)
+        .args(args)                 
+        .stdout(Stdio::piped())
+        .output()
+        .expect("failed to execute command");   
+
+    String::from_utf8_lossy(&output.stdout).into_owned()
 }
 
 /// Write data to child process (cat) stdin via pipe and read its stdout output.
