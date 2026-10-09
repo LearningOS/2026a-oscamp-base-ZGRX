@@ -2,8 +2,8 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-ZGRX",
-  "commit": "4e914d0164505800dd136349794fa6f427dd245d",
-  "score": 11,
+  "commit": "936cb07b69f3a3aceb7b0e4220632c4ac7ad81b2",
+  "score": 15,
   "totalScore": 100,
   "exercises": [
     {
@@ -37,9 +37,9 @@
     {
       "name": "mem_primitives",
       "max": 4,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 4,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "bump_allocator",
@@ -176,9 +176,9 @@
     }
   ],
   "student": "ZGRX",
-  "runId": "36845492323",
+  "runId": "37947080644",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
