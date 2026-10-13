@@ -2,8 +2,8 @@
   "schema": 1,
   "courseId": 2074,
   "repository": "LearningOS/2026a-oscamp-base-ZGRX",
-  "commit": "936cb07b69f3a3aceb7b0e4220632c4ac7ad81b2",
-  "score": 15,
+  "commit": "c45adf50a599cafd38d44b37149c040c644dcd6d",
+  "score": 20,
   "totalScore": 100,
   "exercises": [
     {
@@ -44,9 +44,9 @@
     {
       "name": "bump_allocator",
       "max": 5,
-      "score": 0,
-      "status": "fail",
-      "exitCode": 101
+      "score": 5,
+      "status": "pass",
+      "exitCode": 0
     },
     {
       "name": "free_list_allocator",
@@ -176,9 +176,9 @@
     }
   ],
   "student": "ZGRX",
-  "runId": "37947080644",
+  "runId": "38419831132",
   "runAttempt": "1",
   "upload": {
-    "status": "accepted"
+    "status": "pending"
   }
 }
