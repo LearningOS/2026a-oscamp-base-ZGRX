@@ -56,6 +56,7 @@ impl BumpAllocator {
     }
 
     /// Reset the allocator (free all allocated memory).
+    /// 调用前须确保旧分配都不再使用，且没有线程正在分配。
     pub fn reset(&self) {
         self.next.store(self.heap_start, Ordering::SeqCst);
     }
@@ -63,18 +64,35 @@ impl BumpAllocator {
 
 unsafe impl GlobalAlloc for BumpAllocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        // TODO: Implement bump allocation
-        //
-        // Steps:
-        // 1. Load current next (use Ordering::SeqCst)
-        // 2. Align next up to layout.align()
-        //    Hint: align_up(addr, align) = (addr + align - 1) & !(align - 1)
-        // 3. Compute allocation end = aligned + layout.size()
-        // 4. If end > heap_end, return null_mut()
-        // 5. Atomically update next to end using compare_exchange
-        //    (if CAS fails, another thread raced — retry in a loop)
-        // 6. Return the aligned address as a pointer
-        todo!()
+        let align = layout.align();
+        let mut current = self.next.load(Ordering::SeqCst);
+
+        loop {
+            // 对齐量是 2 的幂：先加 align - 1，再清掉低位，得到不小于 current 的对齐地址。
+            let Some(aligned) = current
+                .checked_add(align - 1)
+                .map(|addr| addr & !(align - 1))
+            else {
+                return null_mut();
+            };
+
+            // 两次加法都要检查溢出；容量不足时不能推进 next。
+            let Some(end) = aligned.checked_add(layout.size()) else {
+                return null_mut();
+            };
+            if end > self.heap_end {
+                return null_mut();
+            }
+
+            // 只有抢到当前 next 的线程才能占用这段内存；失败则用新值重新计算对齐和边界。
+            match self
+                .next
+                .compare_exchange(current, end, Ordering::SeqCst, Ordering::SeqCst)
+            {
+                Ok(_) => return aligned as *mut u8,
+                Err(actual) => current = actual,
+            }
+        }
     }
 
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
@@ -166,5 +184,42 @@ mod tests {
             p1, p2,
             "address after reset should match the first allocation"
         );
+    }
+
+    #[test]
+    fn test_overflow_returns_null_without_advancing() {
+        let (alloc, _heap) = make_allocator();
+        alloc.next.store(usize::MAX, Ordering::SeqCst);
+        let layout = Layout::from_size_align(1, 8).unwrap();
+        assert!(unsafe { alloc.alloc(layout) }.is_null());
+        assert_eq!(alloc.next.load(Ordering::SeqCst), usize::MAX);
+    }
+
+    #[test]
+    fn test_concurrent_allocations_do_not_overlap() {
+        use std::sync::Arc;
+
+        let (alloc, heap) = make_allocator();
+        let alloc = Arc::new(alloc);
+        let layout = Layout::from_size_align(32, 8).unwrap();
+        let mut handles = Vec::new();
+        for _ in 0..8 {
+            let alloc = Arc::clone(&alloc);
+            handles.push(std::thread::spawn(move || {
+                (0..15)
+                    .map(|_| unsafe { alloc.alloc(layout) } as usize)
+                    .collect::<Vec<_>>()
+            }));
+        }
+
+        let mut addresses = handles
+            .into_iter()
+            .flat_map(|handle| handle.join().unwrap())
+            .collect::<Vec<_>>();
+        assert!(addresses.iter().all(|&addr| addr != 0));
+        addresses.sort_unstable();
+        assert!(addresses.windows(2).all(|pair| pair[0] + 32 <= pair[1]));
+        // 堆内存必须活到所有分配和检查结束。
+        drop(heap);
     }
 }
